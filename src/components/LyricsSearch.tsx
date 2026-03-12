@@ -17,7 +17,6 @@ interface LyricsSearchProps {
 	onSelectSong: (song: LrclibSong | null) => void;
 	selectedLines: number[];
 	onSelectLines: React.Dispatch<React.SetStateAction<number[]>>;
-	onShowCard: (show: boolean) => void;
 }
 
 function formatDuration(seconds: number | null | undefined): string | null {
@@ -41,7 +40,6 @@ export function LyricsSearch({
 	onSelectSong,
 	selectedLines,
 	onSelectLines,
-	onShowCard,
 }: LyricsSearchProps) {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState<LrclibSong[]>([]);
@@ -108,7 +106,7 @@ export function LyricsSearch({
 					type="button"
 					onClick={handleSearch}
 					disabled={loading}
-					className="h-14 shrink-0 border-2 border-[#3F3F46] bg-transparent px-8 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 disabled:pointer-events-none disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+					className="h-14 shrink-0 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-8 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 disabled:pointer-events-none disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
 				>
 					Search
 				</button>
@@ -171,7 +169,7 @@ export function LyricsSearch({
 						<button
 							type="button"
 							onClick={() => onSelectSong(null)}
-							className="text-sm font-bold uppercase tracking-widest text-[#A1A1AA] transition-colors hover:text-[#FAFAFA] focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+							className="cursor-pointer text-sm font-bold uppercase tracking-widest text-[#A1A1AA] transition-colors hover:text-[#FAFAFA] focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
 						>
 							← Choose another song
 						</button>
@@ -186,7 +184,7 @@ export function LyricsSearch({
 										key={`line-${lineIndex}`}
 										type="button"
 										onClick={() => toggleLine(lineIndex)}
-										className={`flex items-start gap-4 border-2 px-4 py-3 text-left text-base transition-colors duration-300 md:text-lg lg:text-xl ${
+										className={`flex cursor-pointer items-start gap-4 border-2 px-4 py-3 text-left text-base transition-colors duration-300 md:text-lg lg:text-xl ${
 											isSelected
 												? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
 												: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
@@ -203,15 +201,6 @@ export function LyricsSearch({
 								);
 							})}
 					</div>
-					{selectedLines.length > 0 && (
-						<button
-							type="button"
-							onClick={() => onShowCard(true)}
-							className="mt-8 h-14 bg-[#DFE104] px-8 font-bold uppercase tracking-tighter text-[#000000] transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
-						>
-							Generate Card
-						</button>
-					)}
 				</div>
 			)}
 		</div>
