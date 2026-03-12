@@ -9,7 +9,22 @@ function formatDuration(seconds) {
 	return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-export function LyricsSearch() {
+function parseLyrics(song) {
+	if (!song) return [];
+	const raw = song.plainLyrics || song.syncedLyrics || "";
+	return raw
+		.split("\n")
+		.filter(Boolean)
+		.map((line) => line.replace(/^\[\d+:\d+\.\d+\]\s*/, "").trim());
+}
+
+export function LyricsSearch({
+	selectedSong,
+	onSelectSong,
+	selectedLines,
+	onSelectLines,
+	onShowCard,
+}) {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -22,6 +37,7 @@ export function LyricsSearch() {
 		setLoading(true);
 		setError(null);
 		setResults([]);
+		onSelectSong(null);
 
 		try {
 			const url = `${LRCLIB_SEARCH_URL}?q=${encodeURIComponent(trimmed)}`;
@@ -46,63 +62,117 @@ export function LyricsSearch() {
 		}
 	}
 
+	function handleSelectSong(item) {
+		onSelectSong(item);
+		onSelectLines([]);
+	}
+
+	function toggleLine(index) {
+		onSelectLines((prev) =>
+			prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
+		);
+	}
+
+	const lines = selectedSong ? parseLyrics(selectedSong) : [];
+
 	return (
-		<div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-			<div style={{ display: "flex", gap: "0.5rem" }}>
+		<div className="flex flex-col gap-4">
+			<div className="flex gap-2">
 				<input
 					type="text"
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}
 					onKeyDown={handleKeyDown}
 					placeholder="Song name"
-					style={{ flex: 1, padding: "0.5rem" }}
+					className="flex-1 rounded-lg border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-[var(--sea-ink)] placeholder:text-[var(--sea-ink-soft)] focus:border-[var(--lagoon-deep)] focus:outline-none"
 				/>
 				<button
 					type="button"
 					onClick={handleSearch}
 					disabled={loading}
-					style={{ padding: "0.5rem 1rem" }}
+					className="rounded-lg border border-[var(--chip-line)] bg-[var(--chip-bg)] px-4 py-2 text-sm font-semibold text-[var(--sea-ink)] transition hover:bg-[var(--link-bg-hover)] disabled:opacity-50"
 				>
 					Search
 				</button>
 			</div>
 
-			{loading && <p>Loading...</p>}
+			{loading && <p className="text-[var(--sea-ink-soft)]">Loading...</p>}
 
-			{error && <p style={{ color: "red" }}>{error}</p>}
+			{error && <p className="text-red-600">{error}</p>}
 
 			{!loading && !error && results.length === 0 && query.trim() !== "" && (
-				<p>No results found.</p>
+				<p className="text-[var(--sea-ink-soft)]">No results found.</p>
 			)}
 
 			{!loading && results.length > 0 && (
-				<ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+				<div className="flex flex-col gap-2" role="list">
 					{results.map((item) => (
-						<li
+						<button
 							key={item.id}
-							style={{
-								padding: "0.75rem",
-								marginBottom: "0.5rem",
-								border: "1px solid #ddd",
-								borderRadius: "4px",
-							}}
+							type="button"
+							onClick={() => handleSelectSong(item)}
+							className={`w-full cursor-pointer rounded-lg border p-3 text-left transition hover:border-[var(--lagoon-deep)] hover:bg-[var(--link-bg-hover)] ${
+								selectedSong?.id === item.id
+									? "border-[var(--lagoon-deep)] bg-[var(--hero-a)]"
+									: "border-[var(--line)] bg-[var(--surface)]"
+							}`}
 						>
-							<div style={{ fontWeight: "bold" }}>
+							<div className="font-semibold text-[var(--sea-ink)]">
 								{item.trackName} – {item.artistName}
 							</div>
 							{item.albumName && (
-								<div style={{ fontSize: "0.9em", color: "#666" }}>
+								<div className="text-sm text-[var(--sea-ink-soft)]">
 									{item.albumName}
 								</div>
 							)}
 							{item.duration != null && (
-								<div style={{ fontSize: "0.9em", color: "#666" }}>
+								<div className="text-sm text-[var(--sea-ink-soft)]">
 									{formatDuration(item.duration)}
 								</div>
 							)}
-						</li>
+						</button>
 					))}
-				</ul>
+				</div>
+			)}
+
+			{selectedSong && lines.length > 0 && (
+				<div className="mt-4">
+					<p className="island-kicker mb-3">Select verses</p>
+					<div className="flex flex-col gap-2">
+						{lines.map((line, index) => {
+							const isSelected = selectedLines.includes(index);
+							return (
+								<button
+									key={index}
+									type="button"
+									onClick={() => toggleLine(index)}
+									className={`flex items-start gap-3 rounded-lg border px-3 py-2 text-left text-sm transition hover:border-[var(--lagoon-deep)] ${
+										isSelected
+											? "border-[var(--lagoon-deep)] bg-[var(--hero-a)]"
+											: "border-[var(--line)] bg-[var(--surface)]"
+									}`}
+								>
+									<span
+										className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border border-[var(--line)] text-xs"
+										aria-hidden
+									>
+										{isSelected ? "✓" : " "}
+									</span>
+									<span className="text-[var(--sea-ink)]">{line}</span>
+								</button>
+							);
+						})}
+					</div>
+					{selectedLines.length > 0 && (
+						<button
+							type="button"
+							onClick={() => onShowCard(true)}
+							className="mt-4 rounded-lg border border-[var(--lagoon-deep)] bg-[var(--lagoon)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--lagoon-deep)]"
+						>
+							Generate Card
+						</button>
+					)}
+				</div>
 			)}
 		</div>
 	);
