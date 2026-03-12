@@ -1,7 +1,14 @@
 import { toPng } from "html-to-image";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { fetchAlbumArt } from "#/lib/album-art";
 import type { CardFont, CardTemplate } from "#/lib/card-templates";
+import {
+	DESKTOP_PRESETS,
+	EXPORT_PRESETS,
+	type ExportPreset,
+	PHONE_PRESETS,
+} from "#/lib/export-presets";
 
 interface CardPreviewProps {
 	song: {
@@ -41,6 +48,7 @@ export function CardPreview({
 	const effectiveFont = fontOverride ?? template.font;
 	const cardRef = useRef<HTMLDivElement>(null);
 	const [albumArtUrl, setAlbumArtUrl] = useState<string | null>(null);
+	const [downloadOpen, setDownloadOpen] = useState(false);
 
 	const selectedTexts = selectedLines
 		.map((idx) => ({ idx, line: allLines[idx] }))
@@ -59,17 +67,29 @@ export function CardPreview({
 		};
 	}, [template.background, song.artistName, song.albumName, song.trackName]);
 
-	async function handleDownload() {
+	async function handleDownload(preset: ExportPreset) {
 		if (!cardRef.current) return;
 		try {
 			const bgColor = template.bgColor ?? template.gradientFrom ?? "#ffffff";
-			const dataUrl = await toPng(cardRef.current, {
-				pixelRatio: 2,
+			const isWallpaper = preset.width > 0 && preset.height > 0;
+			const options: Parameters<typeof toPng>[1] = {
+				pixelRatio: isWallpaper ? 1 : 2,
 				backgroundColor: bgColor,
-			});
+			};
+			if (isWallpaper) {
+				options.canvasWidth = preset.width;
+				options.canvasHeight = preset.height;
+				options.style = {
+					width: `${preset.width}px`,
+					height: `${preset.height}px`,
+					maxWidth: "none",
+					aspectRatio: "auto",
+				};
+			}
+			const dataUrl = await toPng(cardRef.current, options);
 			const link = document.createElement("a");
 			link.href = dataUrl;
-			link.download = "lyrics-card.png";
+			link.download = `lyrics-${preset.id}.png`;
 			link.click();
 		} catch (err) {
 			console.error("Download failed:", err);
@@ -284,13 +304,74 @@ export function CardPreview({
 						Copy Link
 					</button>
 				)}
-				<button
-					type="button"
-					onClick={handleDownload}
-					className="h-12 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-6 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
-				>
-					Download Image
-				</button>
+				<div className="relative">
+					<button
+						type="button"
+						onClick={() => setDownloadOpen((o) => !o)}
+						className="flex h-12 cursor-pointer items-center gap-2 border-2 border-[#3F3F46] bg-transparent px-6 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+					>
+						Download
+						<ChevronDown
+							className={`size-4 transition-transform ${downloadOpen ? "rotate-180" : ""}`}
+						/>
+					</button>
+					{downloadOpen && (
+						<>
+							<button
+								type="button"
+								aria-label="Close menu"
+								className="fixed inset-0 z-10"
+								onClick={() => setDownloadOpen(false)}
+							/>
+							<div className="absolute left-0 top-full z-20 mt-1 min-w-[220px] border-2 border-[#3F3F46] bg-[#09090B] py-2">
+								<button
+									type="button"
+									onClick={() => {
+										handleDownload(EXPORT_PRESETS[0]);
+										setDownloadOpen(false);
+									}}
+									className="block w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
+								>
+									Social Card
+								</button>
+								<div className="my-1 border-t border-[#3F3F46]" />
+								<div className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-[#A1A1AA]">
+									Phone Wallpaper
+								</div>
+								{PHONE_PRESETS.map((preset) => (
+									<button
+										key={preset.id}
+										type="button"
+										onClick={() => {
+											handleDownload(preset);
+											setDownloadOpen(false);
+										}}
+										className="block w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
+									>
+										{preset.label}
+									</button>
+								))}
+								<div className="my-1 border-t border-[#3F3F46]" />
+								<div className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-[#A1A1AA]">
+									Desktop Wallpaper
+								</div>
+								{DESKTOP_PRESETS.map((preset) => (
+									<button
+										key={preset.id}
+										type="button"
+										onClick={() => {
+											handleDownload(preset);
+											setDownloadOpen(false);
+										}}
+										className="block w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
+									>
+										{preset.label}
+									</button>
+								))}
+							</div>
+						</>
+					)}
+				</div>
 				<button
 					type="button"
 					onClick={handleCopyLyrics}
