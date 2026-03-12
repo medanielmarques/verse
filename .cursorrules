@@ -1,0 +1,6 @@
+# Verse
+
+- **Package manager**: bun (use `bun add`, `bun run`, etc.)
+- **Stack**: TanStack Start, React 19, Vite, Tailwind CSS
+- **Lint/format**: Biome (tabs, double quotes)
+- **Imports**: use `#/` alias for `./src/*`
