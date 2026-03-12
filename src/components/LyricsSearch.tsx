@@ -2,14 +2,32 @@ import { useState } from "react";
 
 const LRCLIB_SEARCH_URL = "https://lrclib.net/api/search";
 
-function formatDuration(seconds) {
+export interface LrclibSong {
+	id: number;
+	trackName: string;
+	artistName: string;
+	albumName?: string;
+	duration?: number;
+	plainLyrics?: string;
+	syncedLyrics?: string;
+}
+
+interface LyricsSearchProps {
+	selectedSong: LrclibSong | null;
+	onSelectSong: (song: LrclibSong | null) => void;
+	selectedLines: number[];
+	onSelectLines: React.Dispatch<React.SetStateAction<number[]>>;
+	onShowCard: (show: boolean) => void;
+}
+
+function formatDuration(seconds: number | null | undefined): string | null {
 	if (seconds == null || seconds === undefined) return null;
 	const mins = Math.floor(seconds / 60);
 	const secs = Math.floor(seconds % 60);
 	return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-function parseLyrics(song) {
+function parseLyrics(song: LrclibSong | null): string[] {
 	if (!song) return [];
 	const raw = song.plainLyrics || song.syncedLyrics || "";
 	return raw
@@ -24,11 +42,11 @@ export function LyricsSearch({
 	selectedLines,
 	onSelectLines,
 	onShowCard,
-}) {
+}: LyricsSearchProps) {
 	const [query, setQuery] = useState("");
-	const [results, setResults] = useState([]);
+	const [results, setResults] = useState<LrclibSong[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
+	const [error, setError] = useState<string | null>(null);
 
 	async function handleSearch() {
 		const trimmed = query.trim();
@@ -50,24 +68,24 @@ export function LyricsSearch({
 			const data = await response.json();
 			setResults(Array.isArray(data) ? data : []);
 		} catch (err) {
-			setError(err.message || "Something went wrong");
+			setError(err instanceof Error ? err.message : "Something went wrong");
 		} finally {
 			setLoading(false);
 		}
 	}
 
-	function handleKeyDown(e) {
+	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
 		if (e.key === "Enter") {
 			handleSearch();
 		}
 	}
 
-	function handleSelectSong(item) {
+	function handleSelectSong(item: LrclibSong) {
 		onSelectSong(item);
 		onSelectLines([]);
 	}
 
-	function toggleLine(index) {
+	function toggleLine(index: number) {
 		onSelectLines((prev) =>
 			prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
 		);

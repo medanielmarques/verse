@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { CardPreview } from "#/components/CardPreview";
+import type { LrclibSong } from "#/components/LyricsSearch";
 import { LyricsSearch } from "#/components/LyricsSearch";
 
 export const Route = createFileRoute("/")({ component: App });
 
-function parseLyrics(
-	song: { plainLyrics?: string; syncedLyrics?: string } | null,
-) {
+function parseLyrics(song: LrclibSong | null) {
 	if (!song) return [];
 	const raw = song.plainLyrics || song.syncedLyrics || "";
 	return raw
@@ -17,11 +16,7 @@ function parseLyrics(
 }
 
 function App() {
-	const [selectedSong, setSelectedSong] = useState<{
-		trackName: string;
-		artistName: string;
-		albumName?: string;
-	} | null>(null);
+	const [selectedSong, setSelectedSong] = useState<LrclibSong | null>(null);
 	const [selectedLines, setSelectedLines] = useState<number[]>([]);
 	const [showCard, setShowCard] = useState(false);
 
