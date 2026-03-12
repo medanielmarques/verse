@@ -4,3 +4,4 @@
 - **Stack**: TanStack Start, React 19, Vite, Tailwind CSS
 - **Lint/format**: Biome (tabs, double quotes)
 - **Imports**: use `#/` alias for `./src/*`
+- copy always in english

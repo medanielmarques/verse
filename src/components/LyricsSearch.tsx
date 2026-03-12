@@ -130,7 +130,7 @@ export function LyricsSearch({
 				</p>
 			)}
 
-			{!loading && results.length > 0 && (
+			{!loading && results.length > 0 && !selectedSong && (
 				<ul className="flex flex-col gap-2 list-none p-0 m-0">
 					{results.map((item) => (
 						<li key={item.id}>
@@ -164,9 +164,18 @@ export function LyricsSearch({
 
 			{selectedSong && lines.length > 0 && (
 				<div className="mt-4">
-					<p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#A1A1AA] md:text-sm lg:text-lg">
-						Select verses
-					</p>
+					<div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+						<p className="text-xs font-bold uppercase tracking-widest text-[#A1A1AA] md:text-sm lg:text-lg">
+							Select verses
+						</p>
+						<button
+							type="button"
+							onClick={() => onSelectSong(null)}
+							className="text-sm font-bold uppercase tracking-widest text-[#A1A1AA] transition-colors hover:text-[#FAFAFA] focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+						>
+							← Choose another song
+						</button>
+					</div>
 					<div className="flex flex-col gap-2">
 						{lines
 							.map((line, index) => ({ line, lineIndex: index }))
