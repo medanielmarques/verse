@@ -94,32 +94,40 @@ export function LyricsSearch({
 	const lines = selectedSong ? parseLyrics(selectedSong) : [];
 
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="flex gap-2">
+		<div className="flex flex-col gap-8">
+			<div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
 				<input
 					type="text"
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}
 					onKeyDown={handleKeyDown}
-					placeholder="Song name"
-					className="flex-1 rounded-lg border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-[var(--sea-ink)] placeholder:text-[var(--sea-ink-soft)] focus:border-[var(--lagoon-deep)] focus:outline-none"
+					placeholder="SONG NAME"
+					className="h-24 flex-1 border-b-2 border-[#3F3F46] bg-transparent px-0 text-2xl font-bold uppercase tracking-tighter text-[#FAFAFA] placeholder:text-[#27272A] focus:border-[#DFE104] focus:outline-none md:text-4xl"
 				/>
 				<button
 					type="button"
 					onClick={handleSearch}
 					disabled={loading}
-					className="rounded-lg border border-[var(--chip-line)] bg-[var(--chip-bg)] px-4 py-2 text-sm font-semibold text-[var(--sea-ink)] transition hover:bg-[var(--link-bg-hover)] disabled:opacity-50"
+					className="h-14 shrink-0 border-2 border-[#3F3F46] bg-transparent px-8 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 disabled:pointer-events-none disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
 				>
 					Search
 				</button>
 			</div>
 
-			{loading && <p className="text-[var(--sea-ink-soft)]">Loading...</p>}
+			{loading && (
+				<p className="text-lg text-[#A1A1AA] md:text-xl lg:text-2xl">
+					Loading...
+				</p>
+			)}
 
-			{error && <p className="text-red-600">{error}</p>}
+			{error && (
+				<p className="text-lg text-[#A1A1AA] md:text-xl lg:text-2xl">{error}</p>
+			)}
 
 			{!loading && !error && results.length === 0 && query.trim() !== "" && (
-				<p className="text-[var(--sea-ink-soft)]">No results found.</p>
+				<p className="text-lg text-[#A1A1AA] md:text-xl lg:text-2xl">
+					No results found.
+				</p>
 			)}
 
 			{!loading && results.length > 0 && (
@@ -129,22 +137,22 @@ export function LyricsSearch({
 							key={item.id}
 							type="button"
 							onClick={() => handleSelectSong(item)}
-							className={`w-full cursor-pointer rounded-lg border p-3 text-left transition hover:border-[var(--lagoon-deep)] hover:bg-[var(--link-bg-hover)] ${
+							className={`group w-full cursor-pointer border-2 p-6 text-left transition-colors duration-300 ${
 								selectedSong?.id === item.id
-									? "border-[var(--lagoon-deep)] bg-[var(--hero-a)]"
-									: "border-[var(--line)] bg-[var(--surface)]"
+									? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
+									: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
 							}`}
 						>
-							<div className="font-semibold text-[var(--sea-ink)]">
+							<div className="text-xl font-bold text-inherit md:text-2xl lg:text-3xl">
 								{item.trackName} – {item.artistName}
 							</div>
 							{item.albumName && (
-								<div className="text-sm text-[var(--sea-ink-soft)]">
+								<div className="mt-1 text-base text-inherit opacity-80 md:text-lg lg:text-xl">
 									{item.albumName}
 								</div>
 							)}
 							{item.duration != null && (
-								<div className="text-sm text-[var(--sea-ink-soft)]">
+								<div className="mt-1 text-sm text-inherit opacity-70 md:text-base">
 									{formatDuration(item.duration)}
 								</div>
 							)}
@@ -155,7 +163,9 @@ export function LyricsSearch({
 
 			{selectedSong && lines.length > 0 && (
 				<div className="mt-4">
-					<p className="island-kicker mb-3">Select verses</p>
+					<p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#A1A1AA] md:text-sm lg:text-lg">
+						Select verses
+					</p>
 					<div className="flex flex-col gap-2">
 						{lines.map((line, index) => {
 							const isSelected = selectedLines.includes(index);
@@ -164,19 +174,19 @@ export function LyricsSearch({
 									key={index}
 									type="button"
 									onClick={() => toggleLine(index)}
-									className={`flex items-start gap-3 rounded-lg border px-3 py-2 text-left text-sm transition hover:border-[var(--lagoon-deep)] ${
+									className={`flex items-start gap-4 border-2 px-4 py-3 text-left text-base transition-colors duration-300 md:text-lg lg:text-xl ${
 										isSelected
-											? "border-[var(--lagoon-deep)] bg-[var(--hero-a)]"
-											: "border-[var(--line)] bg-[var(--surface)]"
+											? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
+											: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
 									}`}
 								>
 									<span
-										className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border border-[var(--line)] text-xs"
+										className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center border-2 border-current text-xs font-bold"
 										aria-hidden
 									>
 										{isSelected ? "✓" : " "}
 									</span>
-									<span className="text-[var(--sea-ink)]">{line}</span>
+									<span className="text-inherit">{line}</span>
 								</button>
 							);
 						})}
@@ -185,7 +195,7 @@ export function LyricsSearch({
 						<button
 							type="button"
 							onClick={() => onShowCard(true)}
-							className="mt-4 rounded-lg border border-[var(--lagoon-deep)] bg-[var(--lagoon)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--lagoon-deep)]"
+							className="mt-8 h-14 bg-[#DFE104] px-8 font-bold uppercase tracking-tighter text-[#000000] transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
 						>
 							Generate Card
 						</button>
