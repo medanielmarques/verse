@@ -74,6 +74,42 @@ export function CardPreview({
 		}
 	}
 
+	function getLyricsText(): string {
+		const lines = selectedTexts.map((t) => t.line);
+		let text = lines.join("\n");
+		const credits: string[] = [];
+		if (includeArtist) credits.push(`— ${song.artistName}`);
+		if (includeSong) credits.push(song.trackName);
+		if (includeAlbum && song.albumName) credits.push(song.albumName);
+		if (credits.length > 0) text += `\n\n${credits.join("\n")}`;
+		return text;
+	}
+
+	async function handleCopyLyrics() {
+		try {
+			await navigator.clipboard.writeText(getLyricsText());
+		} catch (err) {
+			console.error("Copy failed:", err);
+		}
+	}
+
+	async function handleCopyImage() {
+		if (!cardRef.current) return;
+		try {
+			const bgColor = template.bgColor ?? template.gradientFrom ?? "#ffffff";
+			const dataUrl = await toPng(cardRef.current, {
+				pixelRatio: 2,
+				backgroundColor: bgColor,
+			});
+			const blob = await fetch(dataUrl).then((r) => r.blob());
+			await navigator.clipboard.write([
+				new ClipboardItem({ "image/png": blob }),
+			]);
+		} catch (err) {
+			console.error("Copy image failed:", err);
+		}
+	}
+
 	if (selectedTexts.length === 0) return null;
 
 	const textColor = template.textColor ?? "#09090B";
@@ -227,13 +263,29 @@ export function CardPreview({
 					</div>
 				)}
 			</div>
-			<button
-				type="button"
-				onClick={handleDownload}
-				className="h-14 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-8 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B] group-hover:text-[#000000] group-hover:border-[#000000]"
-			>
-				Download Image
-			</button>
+			<div className="flex flex-wrap justify-center gap-3">
+				<button
+					type="button"
+					onClick={handleDownload}
+					className="h-12 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-6 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+				>
+					Download Image
+				</button>
+				<button
+					type="button"
+					onClick={handleCopyLyrics}
+					className="h-12 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-6 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+				>
+					Copy Lyrics
+				</button>
+				<button
+					type="button"
+					onClick={handleCopyImage}
+					className="h-12 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-6 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+				>
+					Copy Image
+				</button>
+			</div>
 		</div>
 	);
 }
