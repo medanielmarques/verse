@@ -19,6 +19,9 @@ function App() {
 	const [selectedSong, setSelectedSong] = useState<LrclibSong | null>(null);
 	const [selectedLines, setSelectedLines] = useState<number[]>([]);
 	const [showCard, setShowCard] = useState(false);
+	const [includeArtist, setIncludeArtist] = useState(true);
+	const [includeSong, setIncludeSong] = useState(true);
+	const [includeAlbum, setIncludeAlbum] = useState(true);
 
 	function handleSelectSong(song: typeof selectedSong) {
 		setSelectedSong(song);
@@ -74,7 +77,39 @@ function App() {
 								song={selectedSong}
 								selectedLines={selectedLines}
 								allLines={allLines}
+								includeArtist={includeArtist}
+								includeSong={includeSong}
+								includeAlbum={includeAlbum}
 							/>
+						</div>
+						<div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-[#FAFAFA]">
+							<label className="flex cursor-pointer items-center gap-2">
+								<input
+									type="checkbox"
+									checked={includeArtist}
+									onChange={(e) => setIncludeArtist(e.target.checked)}
+									className="h-5 w-5 shrink-0 cursor-pointer accent-[#DFE104]"
+								/>
+								<span className="uppercase tracking-widest">Artist</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<input
+									type="checkbox"
+									checked={includeSong}
+									onChange={(e) => setIncludeSong(e.target.checked)}
+									className="h-5 w-5 shrink-0 cursor-pointer accent-[#DFE104]"
+								/>
+								<span className="uppercase tracking-widest">Song</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<input
+									type="checkbox"
+									checked={includeAlbum}
+									onChange={(e) => setIncludeAlbum(e.target.checked)}
+									className="h-5 w-5 shrink-0 cursor-pointer accent-[#DFE104]"
+								/>
+								<span className="uppercase tracking-widest">Album</span>
+							</label>
 						</div>
 						<div className="mt-8 flex flex-wrap justify-center gap-4">
 							<button

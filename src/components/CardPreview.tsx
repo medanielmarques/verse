@@ -9,12 +9,18 @@ interface CardPreviewProps {
 	};
 	selectedLines: number[];
 	allLines: string[];
+	includeArtist?: boolean;
+	includeSong?: boolean;
+	includeAlbum?: boolean;
 }
 
 export function CardPreview({
 	song,
 	selectedLines,
 	allLines,
+	includeArtist = true,
+	includeSong = true,
+	includeAlbum = true,
 }: CardPreviewProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 
@@ -57,19 +63,25 @@ export function CardPreview({
 						</p>
 					))}
 				</div>
-				<div className="border-t-2 border-[#3F3F46] pt-6 text-center">
-					<p className="m-0 text-sm font-bold uppercase tracking-tighter text-[#09090B] opacity-80 md:text-base">
-						— {song.artistName}
-					</p>
-					<p className="m-0 text-sm opacity-70 md:text-base">
-						{song.trackName}
-					</p>
-					{song.albumName && (
-						<p className="m-0 text-xs opacity-60 md:text-sm">
-							{song.albumName}
-						</p>
-					)}
-				</div>
+				{(includeArtist || includeSong || includeAlbum) && (
+					<div className="border-t-2 border-[#3F3F46] pt-6 text-center">
+						{includeArtist && (
+							<p className="m-0 text-sm font-bold uppercase tracking-tighter text-[#09090B] opacity-80 md:text-base">
+								— {song.artistName}
+							</p>
+						)}
+						{includeSong && (
+							<p className="m-0 text-sm opacity-70 md:text-base">
+								{song.trackName}
+							</p>
+						)}
+						{includeAlbum && song.albumName && (
+							<p className="m-0 text-xs opacity-60 md:text-sm">
+								{song.albumName}
+							</p>
+						)}
+					</div>
+				)}
 			</div>
 			<button
 				type="button"
