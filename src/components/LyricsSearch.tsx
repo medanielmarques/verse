@@ -64,7 +64,7 @@ export function LyricsSearch({
 			}
 
 			const data = await response.json();
-			setResults(Array.isArray(data) ? data : []);
+			setResults(Array.isArray(data) ? (data as LrclibSong[]) : []);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Something went wrong");
 		} finally {
@@ -135,11 +135,7 @@ export function LyricsSearch({
 							<button
 								type="button"
 								onClick={() => handleSelectSong(item)}
-								className={`group w-full cursor-pointer border-2 p-6 text-left transition-colors duration-300 ${
-									selectedSong?.id === item.id
-										? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
-										: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
-								}`}
+								className="group w-full cursor-pointer border-2 border-[#3F3F46] bg-transparent p-6 text-left text-[#FAFAFA] transition-colors duration-300 hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
 							>
 								<div className="text-xl font-bold text-inherit md:text-2xl lg:text-3xl">
 									{item.trackName} – {item.artistName}
