@@ -1,8 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { CardPreview } from "#/components/CardPreview";
+import { FontSelector } from "#/components/FontSelector";
 import type { LrclibSong } from "#/components/LyricsSearch";
 import { LyricsSearch } from "#/components/LyricsSearch";
+import { TemplateSelector } from "#/components/TemplateSelector";
+import type { CardFont } from "#/lib/card-templates";
+import { CARD_TEMPLATES } from "#/lib/card-templates";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -22,6 +26,8 @@ function App() {
 	const [includeArtist, setIncludeArtist] = useState(true);
 	const [includeSong, setIncludeSong] = useState(true);
 	const [includeAlbum, setIncludeAlbum] = useState(true);
+	const [template, setTemplate] = useState(CARD_TEMPLATES[0]);
+	const [fontOverride, setFontOverride] = useState<CardFont | null>(null);
 
 	function handleSelectSong(song: typeof selectedSong) {
 		setSelectedSong(song);
@@ -73,6 +79,23 @@ function App() {
 				<section className="page-wrap flex min-h-screen flex-col items-center justify-center px-4 py-32">
 					<div className="group mx-auto max-w-[95vw]">
 						<div className="border-2 border-[#3F3F46] bg-[#09090B] p-8 transition-colors duration-300 hover:border-[#DFE104] hover:bg-[#DFE104] md:p-12">
+							<div className="mb-8 space-y-6">
+								<div>
+									<p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#A1A1AA]">
+										Template
+									</p>
+									<TemplateSelector value={template} onChange={setTemplate} />
+								</div>
+								<div>
+									<p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#A1A1AA]">
+										Font
+									</p>
+									<FontSelector
+										value={fontOverride ?? template.font}
+										onChange={setFontOverride}
+									/>
+								</div>
+							</div>
 							<CardPreview
 								song={selectedSong}
 								selectedLines={selectedLines}
@@ -80,6 +103,8 @@ function App() {
 								includeArtist={includeArtist}
 								includeSong={includeSong}
 								includeAlbum={includeAlbum}
+								template={template}
+								fontOverride={fontOverride}
 							/>
 						</div>
 						<div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-[#FAFAFA]">
