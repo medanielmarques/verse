@@ -16,6 +16,7 @@ interface CardPreviewProps {
 	includeAlbum?: boolean;
 	template: CardTemplate;
 	fontOverride?: CardFont | null;
+	shareUrl?: string;
 }
 
 const FONT_CLASS: Record<string, string> = {
@@ -35,6 +36,7 @@ export function CardPreview({
 	includeAlbum = true,
 	template,
 	fontOverride = null,
+	shareUrl,
 }: CardPreviewProps) {
 	const effectiveFont = fontOverride ?? template.font;
 	const cardRef = useRef<HTMLDivElement>(null);
@@ -107,6 +109,15 @@ export function CardPreview({
 			]);
 		} catch (err) {
 			console.error("Copy image failed:", err);
+		}
+	}
+
+	async function handleCopyLink() {
+		if (!shareUrl) return;
+		try {
+			await navigator.clipboard.writeText(shareUrl);
+		} catch (err) {
+			console.error("Copy link failed:", err);
 		}
 	}
 
@@ -264,6 +275,15 @@ export function CardPreview({
 				)}
 			</div>
 			<div className="flex flex-wrap justify-center gap-3">
+				{shareUrl && (
+					<button
+						type="button"
+						onClick={handleCopyLink}
+						className="h-12 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-6 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+					>
+						Copy Link
+					</button>
+				)}
 				<button
 					type="button"
 					onClick={handleDownload}

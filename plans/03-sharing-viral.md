@@ -18,10 +18,6 @@ verse.so/card/abc123
 
 ### Social Export
 
-Export buttons:
-
-- Download
-- Copy image
 - Share to Twitter
 - Share to Instagram
 

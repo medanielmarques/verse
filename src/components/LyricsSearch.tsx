@@ -1,16 +1,8 @@
 import { useState } from "react";
+import type { LrclibSong } from "#/lib/lrclib";
+import { searchSongs } from "#/lib/lrclib";
 
-const LRCLIB_SEARCH_URL = "https://lrclib.net/api/search";
-
-export interface LrclibSong {
-	id: number;
-	trackName: string;
-	artistName: string;
-	albumName?: string;
-	duration?: number;
-	plainLyrics?: string;
-	syncedLyrics?: string;
-}
+export type { LrclibSong };
 
 interface LyricsSearchProps {
 	selectedSong: LrclibSong | null;
@@ -56,15 +48,8 @@ export function LyricsSearch({
 		onSelectSong(null);
 
 		try {
-			const url = `${LRCLIB_SEARCH_URL}?q=${encodeURIComponent(trimmed)}`;
-			const response = await fetch(url);
-
-			if (!response.ok) {
-				throw new Error(`Search failed: ${response.status}`);
-			}
-
-			const data = await response.json();
-			setResults(Array.isArray(data) ? (data as LrclibSong[]) : []);
+			const data = await searchSongs(trimmed);
+			setResults(data);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Something went wrong");
 		} finally {
