@@ -6,7 +6,7 @@ export default function Header() {
 			<nav className="page-wrap flex items-center justify-between py-4">
 				<Link
 					to="/"
-					className="text-sm font-bold uppercase tracking-tighter text-[#FAFAFA] no-underline transition-colors duration-300 hover:text-[#DFE104] md:text-base focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+					className="text-sm font-bold uppercase tracking-tighter text-[#FAFAFA] no-underline transition-colors duration-300 hover:text-[#DFE104] md:text-lg focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
 				>
 					Verse
 				</Link>
