@@ -131,34 +131,35 @@ export function LyricsSearch({
 			)}
 
 			{!loading && results.length > 0 && (
-				<div className="flex flex-col gap-2" role="list">
+				<ul className="flex flex-col gap-2 list-none p-0 m-0">
 					{results.map((item) => (
-						<button
-							key={item.id}
-							type="button"
-							onClick={() => handleSelectSong(item)}
-							className={`group w-full cursor-pointer border-2 p-6 text-left transition-colors duration-300 ${
-								selectedSong?.id === item.id
-									? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
-									: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
-							}`}
-						>
-							<div className="text-xl font-bold text-inherit md:text-2xl lg:text-3xl">
-								{item.trackName} – {item.artistName}
-							</div>
-							{item.albumName && (
-								<div className="mt-1 text-base text-inherit opacity-80 md:text-lg lg:text-xl">
-									{item.albumName}
+						<li key={item.id}>
+							<button
+								type="button"
+								onClick={() => handleSelectSong(item)}
+								className={`group w-full cursor-pointer border-2 p-6 text-left transition-colors duration-300 ${
+									selectedSong?.id === item.id
+										? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
+										: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
+								}`}
+							>
+								<div className="text-xl font-bold text-inherit md:text-2xl lg:text-3xl">
+									{item.trackName} – {item.artistName}
 								</div>
-							)}
-							{item.duration != null && (
-								<div className="mt-1 text-sm text-inherit opacity-70 md:text-base">
-									{formatDuration(item.duration)}
-								</div>
-							)}
-						</button>
+								{item.albumName && (
+									<div className="mt-1 text-base text-inherit opacity-80 md:text-lg lg:text-xl">
+										{item.albumName}
+									</div>
+								)}
+								{item.duration != null && (
+									<div className="mt-1 text-sm text-inherit opacity-70 md:text-base">
+										{formatDuration(item.duration)}
+									</div>
+								)}
+							</button>
+						</li>
 					))}
-				</div>
+				</ul>
 			)}
 
 			{selectedSong && lines.length > 0 && (
@@ -167,29 +168,31 @@ export function LyricsSearch({
 						Select verses
 					</p>
 					<div className="flex flex-col gap-2">
-						{lines.map((line, index) => {
-							const isSelected = selectedLines.includes(index);
-							return (
-								<button
-									key={index}
-									type="button"
-									onClick={() => toggleLine(index)}
-									className={`flex items-start gap-4 border-2 px-4 py-3 text-left text-base transition-colors duration-300 md:text-lg lg:text-xl ${
-										isSelected
-											? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
-											: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
-									}`}
-								>
-									<span
-										className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center border-2 border-current text-xs font-bold"
-										aria-hidden
+						{lines
+							.map((line, index) => ({ line, lineIndex: index }))
+							.map(({ line, lineIndex }) => {
+								const isSelected = selectedLines.includes(lineIndex);
+								return (
+									<button
+										key={`line-${lineIndex}`}
+										type="button"
+										onClick={() => toggleLine(lineIndex)}
+										className={`flex items-start gap-4 border-2 px-4 py-3 text-left text-base transition-colors duration-300 md:text-lg lg:text-xl ${
+											isSelected
+												? "border-[#DFE104] bg-[#DFE104] text-[#000000]"
+												: "border-[#3F3F46] bg-transparent text-[#FAFAFA] hover:border-[#DFE104] hover:bg-[#DFE104] hover:text-[#000000]"
+										}`}
 									>
-										{isSelected ? "✓" : " "}
-									</span>
-									<span className="text-inherit">{line}</span>
-								</button>
-							);
-						})}
+										<span
+											className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center border-2 border-current text-xs font-bold"
+											aria-hidden
+										>
+											{isSelected ? "✓" : " "}
+										</span>
+										<span className="text-inherit">{line}</span>
+									</button>
+								);
+							})}
 					</div>
 					{selectedLines.length > 0 && (
 						<button

@@ -18,7 +18,9 @@ export function CardPreview({
 }: CardPreviewProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 
-	const selectedTexts = selectedLines.map((i) => allLines[i]).filter(Boolean);
+	const selectedTexts = selectedLines
+		.map((idx) => ({ idx, line: allLines[idx] }))
+		.filter((x) => x.line);
 
 	async function handleDownload() {
 		if (!cardRef.current) return;
@@ -46,9 +48,9 @@ export function CardPreview({
 				style={{ color: "#09090B" }}
 			>
 				<div className="mb-8 space-y-4 text-center">
-					{selectedTexts.map((line, i) => (
+					{selectedTexts.map(({ idx, line }) => (
 						<p
-							key={`verse-${i}`}
+							key={`verse-${idx}`}
 							className="m-0 text-xl font-medium leading-tight text-[#09090B] md:text-2xl lg:text-3xl"
 						>
 							{line}

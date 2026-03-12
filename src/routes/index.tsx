@@ -80,8 +80,11 @@ function App() {
 							{ num: "∞", label: "VERSES" },
 							{ num: "01", label: "CARD" },
 							{ num: "100%", label: "FREE" },
-						].map((item, i) => (
-							<div key={i} className="flex items-baseline gap-4 text-[#000000]">
+						].map((item) => (
+							<div
+								key={item.label}
+								className="flex items-baseline gap-4 text-[#000000]"
+							>
 								<span className="text-4xl font-bold md:text-6xl lg:text-8xl">
 									{item.num}
 								</span>
