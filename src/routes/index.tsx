@@ -70,16 +70,18 @@ function App() {
 		<main className="min-h-screen">
 			<section className="page-wrap px-4 py-32">
 				<div className="mx-auto max-w-[95vw]">
-					<p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#A1A1AA] md:text-sm lg:text-lg">
-						Lyrics Search
-					</p>
+					{!hasSelection && (
+						<p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#A1A1AA] md:text-sm lg:text-lg">
+							Lyrics Search
+						</p>
+					)}
 					<div className="border-2 border-[#3F3F46] bg-[#09090B] p-8 md:p-12">
 						<div className="flex flex-col gap-12">
 							{hasSelection && selectedSong && (
-								<div className="flex flex-col gap-6">
-									<div className="flex flex-wrap gap-6">
-										<div>
-											<p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#A1A1AA]">
+								<div className="flex flex-col items-center gap-8">
+									<div className="flex w-full max-w-2xl flex-col items-center gap-6">
+										<div className="flex w-full flex-col items-center gap-3">
+											<p className="text-xs font-bold uppercase tracking-widest text-[#A1A1AA]">
 												Template
 											</p>
 											<TemplateSelector
@@ -87,8 +89,8 @@ function App() {
 												onChange={(t) => setParams({ template: t.id })}
 											/>
 										</div>
-										<div>
-											<p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#A1A1AA]">
+										<div className="flex w-full flex-col items-center gap-3">
+											<p className="text-xs font-bold uppercase tracking-widest text-[#A1A1AA]">
 												Font
 											</p>
 											<FontSelector

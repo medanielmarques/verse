@@ -78,24 +78,26 @@ export function LyricsSearch({
 
 	return (
 		<div className="flex flex-col gap-8">
-			<div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
-				<input
-					type="text"
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					onKeyDown={handleKeyDown}
-					placeholder="SONG NAME"
-					className="h-24 flex-1 border-b-2 border-[#3F3F46] bg-transparent px-0 text-2xl font-bold uppercase tracking-tighter text-[#FAFAFA] placeholder:text-[#27272A] focus:border-[#DFE104] focus:outline-none md:text-4xl"
-				/>
-				<button
-					type="button"
-					onClick={handleSearch}
-					disabled={loading}
-					className="h-14 shrink-0 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-8 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 disabled:pointer-events-none disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
-				>
-					Search
-				</button>
-			</div>
+			{!selectedSong && (
+				<div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
+					<input
+						type="text"
+						value={query}
+						onChange={(e) => setQuery(e.target.value)}
+						onKeyDown={handleKeyDown}
+						placeholder="SONG NAME"
+						className="h-24 flex-1 border-b-2 border-[#3F3F46] bg-transparent px-0 text-2xl font-bold uppercase tracking-tighter text-[#FAFAFA] placeholder:text-[#27272A] focus:border-[#DFE104] focus:outline-none md:text-4xl"
+					/>
+					<button
+						type="button"
+						onClick={handleSearch}
+						disabled={loading}
+						className="h-14 shrink-0 cursor-pointer border-2 border-[#3F3F46] bg-transparent px-8 font-bold uppercase tracking-tighter text-[#FAFAFA] transition-all duration-300 hover:scale-105 hover:border-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B] active:scale-95 disabled:pointer-events-none disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#DFE104] focus:ring-offset-2 focus:ring-offset-[#09090B]"
+					>
+						Search
+					</button>
+				</div>
+			)}
 
 			{loading && (
 				<p className="text-lg text-[#A1A1AA] md:text-xl lg:text-2xl">

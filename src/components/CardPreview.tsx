@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { fetchAlbumArt } from "#/lib/album-art";
 import type { CardFont, CardTemplate } from "#/lib/card-templates";
 import {
-	DESKTOP_PRESETS,
 	EXPORT_PRESETS,
 	type ExportPreset,
 	PHONE_PRESETS,
@@ -323,14 +322,14 @@ export function CardPreview({
 								className="fixed inset-0 z-10"
 								onClick={() => setDownloadOpen(false)}
 							/>
-							<div className="absolute left-0 top-full z-20 mt-1 min-w-[220px] border-2 border-[#3F3F46] bg-[#09090B] py-2">
+							<div className="absolute left-1/2 top-full z-20 mt-1 min-w-[220px] -translate-x-1/2 border-2 border-[#3F3F46] bg-[#09090B] py-2">
 								<button
 									type="button"
 									onClick={() => {
 										handleDownload(EXPORT_PRESETS[0]);
 										setDownloadOpen(false);
 									}}
-									className="block w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
+									className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
 								>
 									Social Card
 								</button>
@@ -346,24 +345,7 @@ export function CardPreview({
 											handleDownload(preset);
 											setDownloadOpen(false);
 										}}
-										className="block w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
-									>
-										{preset.label}
-									</button>
-								))}
-								<div className="my-1 border-t border-[#3F3F46]" />
-								<div className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-[#A1A1AA]">
-									Desktop Wallpaper
-								</div>
-								{DESKTOP_PRESETS.map((preset) => (
-									<button
-										key={preset.id}
-										type="button"
-										onClick={() => {
-											handleDownload(preset);
-											setDownloadOpen(false);
-										}}
-										className="block w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
+										className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[#27272A]"
 									>
 										{preset.label}
 									</button>
